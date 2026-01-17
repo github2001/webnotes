@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>WebNotes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            width: 360px;
+            min-height: 400px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 14px;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: #fff;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 12px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #4caf50;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+            color: #666;
+            transition: color 0.2s;
+        }
+        
+        .tab:hover {
+            color: #4caf50;
+        }
+        
+        .tab.active {
+            color: #4caf50;
+            border-bottom: 2px solid #4caf50;
+        }
+        
+        .content {
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        
+        .annotation-list {
+            padding: 8px;
+        }
+        
+        .annotation-item {
+            background: #fff;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .annotation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .annotation-site {
+            font-size: 12px;
+            color: #999;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .annotation-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .annotation-actions button {
+            background: none;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        
+        .annotation-actions button:hover {
+            opacity: 1;
+        }
+        
+        .annotation-text {
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 8px;
+            background: #fff9c4;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        
+        .annotation-note {
+            font-size: 13px;
+            color: #666;
+            padding: 8px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            border-left: 3px solid #4caf50;
+        }
+        
+        .annotation-time {
+            font-size: 11px;
+            color: #bbb;
+            text-align: right;
+            margin-top: 8px;
+        }
+        
+        .empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            background: #fff;
+            border-top: 1px solid #eee;
+        }
+        
+        .footer button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .btn-export {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .btn-export:hover {
+            background: #bbdefb;
+        }
+        
+        .btn-clear {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .btn-clear:hover {
+            background: #ffcdd2;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📝 WebNotes</h1>
+        <p>网页标注笔记工具</p>
+    </div>
+    
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-value" id="totalCount">0</div>
+            <div class="stat-label">总标注</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="noteCount">0</div>
+            <div class="stat-label">含笔记</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="siteCount">0</div>
+            <div class="stat-label">网站数</div>
+        </div>
+    </div>
+    
+    <div class="tabs">
+        <button class="tab active" data-tab="all">全部</button>
+        <button class="tab" data-tab="current">当前页</button>
+    </div>
+    
+    <div class="content">
+        <div class="annotation-list" id="annotationList">
+            <div class="empty">
+                <div class="empty-icon">📝</div>
+                <div>暂无标注</div>
+                <div style="font-size:12px;margin-top:8px;">选中文本后右键或按 Ctrl+Shift+H 高亮</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <button class="btn-export" id="exportBtn">📤 导出</button>
+        <button class="btn-clear" id="clearBtn">🗑️ 清空</button>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>
