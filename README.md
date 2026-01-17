@@ -118,5 +118,5 @@ WebNotes/
 ---
 
 <p align="center">
-  如有问题或建议，欢迎通过 <a href="https://github.com/your-username/webnotes/issues">Issues</a> 反馈！
+  如有问题或建议，欢迎通过 <a href="https://github.com/github2001/webnotes/issues">Issues</a> 反馈！
 </p>
